@@ -1,0 +1,134 @@
+[gd_scene load_steps=14 format=3 uid="uid://b1y1eap5q1dws"]
+
+[ext_resource type="Script" uid="uid://2g5u53bbybk7" path="res://scripts/player.gd" id="1_ovkwn"]
+[ext_resource type="PackedScene" uid="uid://bkb4wd464le6g" path="res://scenes/grenade.tscn" id="2_jw5ya"]
+[ext_resource type="Material" uid="uid://crbopxk1glyq0" path="res://materials/indicator_material.tres" id="2_nrt8s"]
+[ext_resource type="PackedScene" uid="uid://bqenhlxtrl1ma" path="res://scenes/spear.tscn" id="3_tuyoq"]
+[ext_resource type="PackedScene" uid="uid://bi7vniosvwa8c" path="res://scenes/hit_box.tscn" id="4_ge4ua"]
+[ext_resource type="ArrayMesh" uid="uid://8e2flesnj2ux" path="res://meshes/spear_Cube.res" id="5_fjrip"]
+[ext_resource type="PackedScene" uid="uid://ceosq3m3rc0a3" path="res://scenes/grenade_in_hand.tscn" id="5_qlg0r"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sv5h7"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h81ep"]
+radius = 0.125
+height = 0.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_g5bst"]
+radius = 0.05
+height = 0.25
+
+[sub_resource type="PrismMesh" id="PrismMesh_nn47u"]
+material = ExtResource("2_nrt8s")
+size = Vector3(1, 1.25, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_un68u"]
+albedo_color = Color(0, 0, 0, 1)
+emission_enabled = true
+
+[sub_resource type="PrismMesh" id="PrismMesh_dda7n"]
+material = SubResource("StandardMaterial3D_un68u")
+size = Vector3(1, 1.25, 0.1)
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 25
+script = ExtResource("1_ovkwn")
+grenade_scene = ExtResource("2_jw5ya")
+spear_scene = ExtResource("3_tuyoq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("CapsuleShape3D_sv5h7")
+disabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_h81ep")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.341417, -0.0711063)
+visible = false
+mesh = SubResource("CapsuleMesh_g5bst")
+
+[node name="CameraGimbal" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.038)
+
+[node name="Camera" type="Camera3D" parent="CameraGimbal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0954871)
+cull_mask = 524283
+current = true
+fov = 65.0
+far = 30.0
+
+[node name="Light" type="SpotLight3D" parent="CameraGimbal/Camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.215, 0.5)
+layers = 524289
+light_color = Color(1, 1, 0.756863, 1)
+light_energy = 2.5
+shadow_enabled = true
+shadow_opacity = 0.7
+spot_range = 40.0
+spot_attenuation = 2.0
+spot_angle = 40.0
+spot_angle_attenuation = 2.0
+
+[node name="WeaponSlot" type="Node3D" parent="CameraGimbal/Camera"]
+
+[node name="GrenadeInHand" parent="CameraGimbal/Camera/WeaponSlot" instance=ExtResource("5_qlg0r")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0.3, 0, -0.35)
+visible = false
+layers = 524288
+skeleton = NodePath("../../../..")
+
+[node name="SpearInHand" type="MeshInstance3D" parent="CameraGimbal/Camera/WeaponSlot"]
+transform = Transform3D(0.495134, -0.00062127, 0.139172, 0.00087266, 0.499996, -0.00349065, -0.0695835, 0.00184979, 0.990262, 0.214, 0.02, 0.1)
+visible = false
+layers = 524288
+cast_shadow = 0
+mesh = ExtResource("5_fjrip")
+
+[node name="HitBox" parent="." node_paths=PackedStringArray("target") instance=ExtResource("4_ge4ua")]
+collision_layer = 0
+collision_mask = 192
+target = NodePath("..")
+
+[node name="CollisionShape3D" parent="HitBox" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("CapsuleShape3D_sv5h7")
+
+[node name="Marker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.25, 0, 0, 0, -4.37114e-08, 1.25, 0, -1, -5.46392e-08, 0, 3.6, -0.1)
+layers = 4
+mesh = SubResource("PrismMesh_nn47u")
+
+[node name="Marker2" type="MeshInstance3D" parent="Marker"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, -2.73286e-14, 0, 4.09929e-14, 1, 0, 0.0294262, -0.0274539)
+layers = 4
+mesh = SubResource("PrismMesh_dda7n")
+skeleton = NodePath("../..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+cull_mask = 524288
+fov = 65.0
+far = 30.0
+
+[editable path="HitBox"]

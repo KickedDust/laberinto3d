@@ -1,0 +1,430 @@
+[gd_scene load_steps=32 format=3 uid="uid://b2kx3pbytijw1"]
+
+[ext_resource type="Script" uid="uid://ds1758psbybo5" path="res://scripts/hex_maze.gd" id="1_k0ibe"]
+[ext_resource type="PackedScene" uid="uid://cyrp51sdsmug" path="res://scenes/room_elements/hex_room.tscn" id="2_a6gxg"]
+[ext_resource type="PackedScene" uid="uid://b1y1eap5q1dws" path="res://scenes/player.tscn" id="3_3ttit"]
+[ext_resource type="PackedScene" uid="uid://cv7vir4skba8n" path="res://scenes/room_elements/hex_room_small.tscn" id="3_tymju"]
+[ext_resource type="PackedScene" uid="uid://dupc2snhor4cq" path="res://scenes/enemies/patroling_enemy.tscn" id="4_t2nx0"]
+[ext_resource type="PackedScene" uid="uid://bcir1xrpmpjdm" path="res://scenes/enemies/seeker.tscn" id="5_2tns3"]
+[ext_resource type="PackedScene" uid="uid://48d0mgvb4dda" path="res://scenes/chest.tscn" id="6_7spxe"]
+[ext_resource type="PackedScene" uid="uid://cmyjlv3sryllg" path="res://scenes/enemies/little_enemy.tscn" id="6_bikdm"]
+[ext_resource type="Script" uid="uid://cff07puqlply8" path="res://scripts/inventory.gd" id="7_6r1b2"]
+[ext_resource type="Script" uid="uid://d1ycc265if6hj" path="res://scripts/hud.gd" id="7_342dg"]
+[ext_resource type="PackedScene" uid="uid://dcswnwd42le1n" path="res://scenes/map_elements/map_hex.tscn" id="7_lyi48"]
+[ext_resource type="StyleBox" uid="uid://xn5os3rvqd5j" path="res://slot_stylebox_basic.tres" id="8_0rgb7"]
+[ext_resource type="PackedScene" uid="uid://fe2u7rpk2iq8" path="res://scenes/map_elements/map_hex_small.tscn" id="8_5japd"]
+[ext_resource type="StyleBox" uid="uid://02xefc6jnw6p" path="res://slot_stylebox_with_border.tres" id="9_iqbtt"]
+[ext_resource type="PackedScene" uid="uid://pxcjpbn5egbv" path="res://scenes/map_elements/big_map.tscn" id="10_apq1y"]
+[ext_resource type="Shader" uid="uid://bxos21iiryske" path="res://pixelate.gdshader" id="12_3vhii"]
+[ext_resource type="Texture2D" uid="uid://bsys0rmw0cm0" path="res://textures/weapon_wheel.png" id="16_qvxpa"]
+[ext_resource type="Texture2D" uid="uid://cmbcsvqxspcq" path="res://sprites/health_potion.png" id="16_wp8ya"]
+[ext_resource type="Texture2D" uid="uid://hlfen0vf5lr0" path="res://textures/weapon_wheel_selector.png" id="17_gtlhd"]
+[ext_resource type="Texture2D" uid="uid://5xls6x4dmyy3" path="res://sprites/stamina_potion.png" id="17_r2nl2"]
+[ext_resource type="Texture2D" uid="uid://b43ejqqdh5ndf" path="res://sprites/grenade.png" id="18_qx7xi"]
+[ext_resource type="Texture2D" uid="uid://b5p7lhxxbdpvk" path="res://sprites/spear.png" id="21_hp7ou"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0twwp"]
+sky_cover_modulate = Color(0.868985, 0.868985, 0.868985, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_ya488"]
+sky_material = SubResource("ProceduralSkyMaterial_0twwp")
+
+[sub_resource type="Environment" id="Environment_prdqm"]
+background_mode = 1
+sky = SubResource("Sky_ya488")
+ambient_light_source = 1
+ambient_light_sky_contribution = 0.0
+tonemap_exposure = 1.1
+fog_mode = 1
+fog_light_color = Color(0.724643, 0.724643, 0.724643, 1)
+fog_light_energy = 10.0
+fog_density = 1.0
+fog_sky_affect = 0.0
+fog_depth_begin = 1025.6
+fog_depth_end = 1025.6
+volumetric_fog_albedo = Color(0, 0, 0, 1)
+volumetric_fog_length = 50.0
+adjustment_enabled = true
+adjustment_saturation = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tmlh1"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_gmeqr"]
+font_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ergwk"]
+bg_color = Color(0, 1, 0, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pins"]
+bg_color = Color(1, 1, 0, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_apq1y"]
+shader = ExtResource("12_3vhii")
+shader_parameter/pixel_size = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8lijc"]
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(7.78515e-06, 0.255032, 0.0431681, 1)
+
+[node name="HexMaze" type="Node3D"]
+script = ExtResource("1_k0ibe")
+MAZE_SIZE = 2
+VIEW_DISTANCE = 3
+connectivity_ratio = 0.5
+hex_room_scene = ExtResource("2_a6gxg")
+small_hex_room_scene = ExtResource("3_tymju")
+basic_enemy_scene = ExtResource("4_t2nx0")
+seeker_enemy_scene = ExtResource("5_2tns3")
+little_enemy_scene = ExtResource("6_bikdm")
+chest_scene = ExtResource("6_7spxe")
+map_hex_scene = ExtResource("7_lyi48")
+small_map_hex_scene = ExtResource("8_5japd")
+big_map_scene = ExtResource("10_apq1y")
+
+[node name="Player" parent="." instance=ExtResource("3_3ttit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_prdqm")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="HUD" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_342dg")
+
+[node name="Inventory" type="PanelContainer" parent="HUD/HUD"]
+custom_minimum_size = Vector2(1000, 160)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -508.0
+offset_top = -200.0
+offset_right = 508.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(508, 200)
+theme_override_styles/panel = SubResource("StyleBoxFlat_tmlh1")
+script = ExtResource("7_6r1b2")
+normal_style = ExtResource("8_0rgb7")
+border_style = ExtResource("9_iqbtt")
+item_textures = Array[Texture]([ExtResource("16_wp8ya"), ExtResource("17_r2nl2"), ExtResource("18_qx7xi")])
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/HUD/Inventory"]
+custom_minimum_size = Vector2(1000, 160)
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 32
+
+[node name="InventoryBar" type="HBoxContainer" parent="HUD/HUD/Inventory/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("9_iqbtt")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="PanelContainer2" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_0rgb7")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer2"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="PanelContainer3" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_0rgb7")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer3"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="PanelContainer4" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_0rgb7")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer4"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="PanelContainer5" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_0rgb7")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer5"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer5"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="PanelContainer6" type="PanelContainer" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar"]
+clip_children = 2
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("8_0rgb7")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer6"]
+layout_mode = 2
+expand_mode = 3
+
+[node name="Label" type="Label" parent="HUD/HUD/Inventory/MarginContainer/InventoryBar/PanelContainer6"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_gmeqr")
+
+[node name="Timer" type="Timer" parent="HUD/HUD/Inventory"]
+wait_time = 1.25
+one_shot = true
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HUD"]
+custom_minimum_size = Vector2(256, 32)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -264.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_ergwk")
+max_value = 50.0
+value = 22.0
+show_percentage = false
+
+[node name="StaminaBar" type="ProgressBar" parent="HUD/HUD"]
+custom_minimum_size = Vector2(256, 32)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -264.0
+offset_top = 49.0
+offset_right = -8.0
+offset_bottom = 81.0
+grow_horizontal = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_8pins")
+max_value = 50.0
+value = 22.0
+show_percentage = false
+
+[node name="RedVeil" type="ColorRect" parent="HUD/HUD"]
+modulate = Color(1, 0, 0, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WeaponWheel" type="TextureRect" parent="HUD/HUD"]
+visible = false
+self_modulate = Color(0.446777, 0.446777, 0.446777, 0.588235)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -710.0
+offset_top = -362.0
+offset_right = -170.0
+offset_bottom = 178.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("16_qvxpa")
+
+[node name="Selector" type="TextureRect" parent="HUD/HUD/WeaponWheel"]
+self_modulate = Color(1, 1, 1, 0.486275)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(270, 270)
+texture = ExtResource("17_gtlhd")
+
+[node name="Control" type="Control" parent="HUD/HUD/WeaponWheel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WeaponImage" type="TextureRect" parent="HUD/HUD/WeaponWheel/Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -64.0
+offset_top = -13.0
+offset_right = 64.0
+offset_bottom = 115.0
+grow_horizontal = 2
+texture = ExtResource("18_qx7xi")
+
+[node name="WeaponImage2" type="TextureRect" parent="HUD/HUD/WeaponWheel/Control"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_bottom = 128.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("21_hp7ou")
+
+[node name="Chests" type="Node3D" parent="."]
+
+[node name="Rooms" type="Node3D" parent="."]
+
+[node name="Map" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+layers = 524289
+light_color = Color(0.854902, 1, 1, 1)
+light_energy = 0.1
+light_angular_distance = 0.5
+light_cull_mask = 4294967293
+
+[node name="Pixelation" type="CanvasLayer" parent="."]
+layer = 2
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="Pixelation"]
+material = SubResource("ShaderMaterial_apq1y")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MiniMapLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="MiniMap" type="SubViewportContainer" parent="MiniMapLayer"]
+offset_right = 384.0
+offset_bottom = 384.0
+
+[node name="SubViewport" type="SubViewport" parent="MiniMapLayer/MiniMap"]
+handle_input_locally = false
+size = Vector2i(384, 384)
+render_target_update_mode = 4
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MiniMapLayer/MiniMap/SubViewport"]
+
+[node name="Control" type="Control" parent="MiniMapLayer/MiniMap/SubViewport/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="MiniMapLayer/MiniMap/SubViewport/CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8lijc")
+
+[node name="OrthCamera" type="Camera3D" parent="MiniMapLayer/MiniMap/SubViewport/CanvasLayer"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10, 0)
+keep_aspect = 0
+cull_mask = 1048572
+projection = 1
+current = true
+size = 25.0
+near = 0.001
+far = 100.0
+
+[connection signal="grenade_thrown" from="Player" to="." method="_on_player_grenade_thrown"]
+[connection signal="health_changed" from="Player" to="HUD/HUD" method="update_health"]
+[connection signal="ouch" from="Player" to="HUD/HUD" method="ouch"]
+[connection signal="spear_thrown" from="Player" to="." method="_on_player_spear_thrown"]
+[connection signal="stamina_changed" from="Player" to="HUD/HUD" method="update_stamina"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="weapon_selected" from="HUD/HUD" to="Player" method="_on_weapon_changed"]
+[connection signal="slot_changed" from="HUD/HUD/Inventory" to="Player" method="_on_weapon_changed"]
+[connection signal="timeout" from="HUD/HUD/Inventory/Timer" to="HUD/HUD/Inventory" method="_on_timer_timeout"]
